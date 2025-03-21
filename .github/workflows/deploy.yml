@@ -2,8 +2,8 @@ name: Deploy Astro to GitHub Pages
 
 on:
   push:
-    branches: [main] # Cambia a tu rama principal si no es main
-  workflow_dispatch: # Permite ejecutar manualmente desde la pestaña Actions
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,8 +20,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Usa la versión de Node que prefieras
-          cache: 'npm' # Habilita caché para npm
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Clean npm cache
+        run: npm cache clean --force
 
       - name: Install dependencies
         run: npm install
@@ -32,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist # Carpeta donde Astro genera el sitio estático
+          path: ./dist
 
   deploy:
     environment:
