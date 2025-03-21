@@ -17,14 +17,63 @@ const marcas = [...new Set(data.map((item: Indicio) => item.MARCA))].sort();
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Filtrar Indicios</title>
-		<link rel="stylesheet" href="../styles/styles.css" />
+
+		<!-- Título y descripción para SEO -->
+		<title>Catálogo de Indicios Teuchitlán - Rancho Izaguirre</title>
+		<meta
+			name="description"
+			content="Catálogo interactivo de indicios descubiertos en el Rancho Izaguirre, Teuchitlán, Jalisco, basado en datos oficiales de la Fiscalía de Jalisco. Incluye filtros y imágenes."
+		/>
+
+		<!-- Palabras clave para buscadores -->
+		<meta
+			name="keywords"
+			content="indicios, Teuchitlán, Rancho Izaguirre, Fiscalía Jalisco, catálogo, fosas, Guerreros Buscadores, investigación forense"
+		/>
+
+		<!-- Autor -->
+		<meta name="author" content="Juan Pablo Solana" />
+
+		<!-- Open Graph para redes sociales -->
+		<meta
+			property="og:title"
+			content="Catálogo de Indicios Teuchitlán - Rancho Izaguirre"
+		/>
+		<meta
+			property="og:description"
+			content="Explora el catálogo de indicios del Rancho Izaguirre en Teuchitlán, Jalisco, con datos de la Fiscalía y filtros interactivos."
+		/>
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:url"
+			content="https://juanpablosolana.github.io/catalogoIndiciosTeuchitlan/"
+		/>
+		<meta
+			property="og:image"
+			content="https://juanpablosolana.github.io/catalogoIndiciosTeuchitlan/imagenes_descargadas/001_1A.jpg"
+		/>
+		<!-- Cambia por una imagen representativa -->
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta
+			name="twitter:title"
+			content="Catálogo de Indicios Teuchitlán - Rancho Izaguirre"
+		/>
+		<meta
+			name="twitter:description"
+			content="Catálogo interactivo de indicios en Teuchitlán, Jalisco, con datos oficiales y filtros."
+		/>
+		<meta
+			name="twitter:image"
+			content="https://juanpablosolana.github.io/catalogoIndiciosTeuchitlan/imagenes_descargadas/001_1A.jpg"
+		/>
+		<!-- Cambia por una imagen representativa -->
 	</head>
 	<body>
-		<header>
-			<h1>
-				Catálogo de Indicios - Rancho Izaguirre Teuchitlan, Jalisco México 2025
-			</h1>
+		<header class="container">
+			<h1>Lista de Indicios</h1>
+			<!-- Resto del código (filtros, tabla, script) sigue igual -->
 		</header>
 
 		<!-- Filtros -->
