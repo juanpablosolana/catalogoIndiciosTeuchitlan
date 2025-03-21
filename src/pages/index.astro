@@ -1,11 +1,214 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import "../styles/styles.css";
+import type {Indicio} from "../types/indicio";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Cargar el JSON directamente desde public
+import data from "../../public/output_with_paths.json";
+
+// Obtener valores únicos para los filtros
+const tipos = [
+	...new Set(data.map((item: Indicio) => item["TIPO DE INDICIO"])),
+].sort();
+const colores = [...new Set(data.map((item: Indicio) => item.COLOR))].sort();
+const marcas = [...new Set(data.map((item: Indicio) => item.MARCA))].sort();
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Filtrar Indicios</title>
+		<link rel="stylesheet" href="../styles/styles.css" />
+	</head>
+	<body>
+		<header>
+			<h1>
+				Catálogo de Indicios - Rancho Izaguirre Teuchitlan, Jalisco México 2025
+			</h1>
+		</header>
+
+		<!-- Filtros -->
+		<section class="filters">
+			<div class="filter-group">
+				<label for="tipo">Tipo de Indicio:</label>
+				<select id="tipo" aria-label="Filtrar por tipo de indicio">
+					<option value="">Todos</option>
+					{tipos.map((tipo) => <option value={tipo}>{tipo}</option>)}
+				</select>
+			</div>
+
+			<div class="filter-group">
+				<label for="color">Color:</label>
+				<select id="color" aria-label="Filtrar por color">
+					<option value="">Todos</option>
+					{colores.map((color) => <option value={color}>{color}</option>)}
+				</select>
+			</div>
+
+			<div class="filter-group">
+				<label for="marca">Marca:</label>
+				<select id="marca" aria-label="Filtrar por marca">
+					<option value="">Todos</option>
+					{marcas.map((marca) => <option value={marca}>{marca}</option>)}
+				</select>
+			</div>
+		</section>
+
+		<!-- Tarjetas -->
+		<section class="cards-container">
+			{
+				data.map((item: Indicio) => (
+					<article
+						class="card"
+						data-tipo={item["TIPO DE INDICIO"]}
+						data-color={item.COLOR}
+						data-marca={item.MARCA}
+					>
+						<div class="card-image">
+							{item["RUTA IMAGEN"] ? (
+								<img
+									src={`/${item["RUTA IMAGEN"]}`}
+									alt={item.INDICIO}
+									class="highlighted-image"
+								/>
+							) : (
+								<span class="no-image">Sin imagen</span>
+							)}
+						</div>
+						<div class="card-content">
+							<h2 class="card-title">{item.INDICIO}</h2>
+							<p>
+								<strong>ID:</strong> {item.id}
+							</p>
+							<p>
+								<strong>Tipo:</strong> {item["TIPO DE INDICIO"]}
+							</p>
+							<p>
+								<strong>Color:</strong> {item.COLOR}
+							</p>
+							<p>
+								<strong>Marca:</strong> {item.MARCA}
+							</p>
+							<p>
+								<strong>Talla:</strong> {item.TALLA}
+							</p>
+							<p>
+								<strong>Observaciones:</strong> {item.OBSERVACIONES}
+							</p>
+							<p>
+								<strong>Descargar :</strong>
+								<a href={item["LINK FOTO"]} target="_blank">
+									foto
+								</a>
+							</p>
+						</div>
+					</article>
+				))
+			}
+		</section>
+
+		<!-- Modal para ver la imagen en grande -->
+		<div id="image-modal" class="modal">
+			<span class="close">&times;</span>
+			<img class="modal-content" id="modal-image" />
+		</div>
+
+		<!-- JavaScript para los filtros y el modal -->
+		<script>
+			// Filtros
+			const table = document.getElementById("indicios-table");
+			const tipoFilter = document.getElementById("tipo");
+			const colorFilter = document.getElementById("color");
+			const marcaFilter = document.getElementById("marca");
+			function applyFilters() {
+				const tipoValue = (tipoFilter as HTMLSelectElement)?.value || "";
+				const colorValue = (colorFilter as HTMLSelectElement)?.value || "";
+				const marcaValue = (marcaFilter as HTMLSelectElement)?.value || "";
+
+				const rows = table?.querySelectorAll("tbody tr") || [];
+				rows.forEach((row) => {
+					const tipo = row.getAttribute("data-tipo");
+					const color = row.getAttribute("data-color");
+					const marca = row.getAttribute("data-marca");
+
+					const matchesTipo = !tipoValue || tipo === tipoValue;
+					const matchesColor = !colorValue || color === colorValue;
+					const matchesMarca = !marcaValue || marca === marcaValue;
+
+					(row as HTMLElement).style.display =
+						matchesTipo && matchesColor && matchesMarca ? "" : "none";
+				});
+			}
+
+			if (tipoFilter && colorFilter && marcaFilter) {
+				tipoFilter.addEventListener("change", applyFilters);
+				colorFilter.addEventListener("change", applyFilters);
+				marcaFilter.addEventListener("change", applyFilters);
+			}
+
+			// Modal y zoom
+			const modal = document.getElementById("image-modal");
+			const modalImg = document.getElementById("modal-image");
+			const closeBtn = document.querySelector(".close");
+
+			let scale = 1; // Nivel de zoom inicial
+
+			function openModal(imgSrc: string) {
+				if (modal && modalImg) {
+					modal.style.display = "block";
+					(modalImg as HTMLImageElement).src = imgSrc;
+					scale = 1; // Reiniciar el zoom al abrir el modal
+					modalImg.style.transform = `scale(${scale})`;
+				}
+			}
+			function closeModal() {
+				if (modal) {
+					modal.style.display = "none";
+				}
+			}
+
+			// Zoom al hacer clic en la imagen
+			if (modalImg) {
+				modalImg.addEventListener("click", (event) => {
+					event.stopPropagation(); // Evitar que el modal se cierre
+					scale += 0.5; // Aumentar el zoom en 0.5x
+					if (scale > 3) scale = 1; // Reiniciar el zoom si supera 3x
+					modalImg.style.transform = `scale(${scale})`;
+				});
+			}
+			// Zoom con la rueda del mouse
+			if (modalImg) {
+				modalImg.addEventListener("wheel", (event) => {
+					event.preventDefault(); // Evitar el scroll de la página
+					if (event.deltaY < 0) {
+						scale += 0.1; // Aumentar el zoom
+					} else {
+						scale -= 0.1; // Reducir el zoom
+					}
+					// Limitar el zoom entre 0.5x y 3x
+					scale = Math.min(Math.max(scale, 0.5), 3);
+					modalImg.style.transform = `scale(${scale})`;
+				});
+			}
+			// Cerrar el modal al hacer clic en la "X" o fuera de la imagen
+			if (closeBtn) {
+				closeBtn.addEventListener("click", closeModal);
+			}
+			window.addEventListener("click", (event) => {
+				if (event.target === modal) {
+					closeModal();
+				}
+			});
+
+			// Asignar evento de clic a todas las imágenes de la tabla
+			const images =
+				document.querySelectorAll<HTMLImageElement>(".highlighted-image");
+			images.forEach((img) => {
+				img.addEventListener("click", () => openModal(img.src));
+			});
+
+			// Aplicar filtros al cargar la página
+			applyFilters();
+		</script>
+	</body>
+</html>
