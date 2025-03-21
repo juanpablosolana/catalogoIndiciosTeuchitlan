@@ -24,7 +24,9 @@ jobs:
           cache: 'pnpm' # Habilita caché para PNPM
 
       - name: Install PNPM
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '8' # Usa la versión más reciente de PNPM (ajústala si necesitas otra)
 
       - name: Install dependencies
         run: pnpm install
