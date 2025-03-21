@@ -69,6 +69,7 @@ const marcas = [...new Set(data.map((item: Indicio) => item.MARCA))].sort();
 								<img
 									src={`/catalogoIndiciosTeuchitlan/${item["RUTA IMAGEN"]}`}
 									alt={item.INDICIO}
+									class="highlighted-image"
 								/>
 							) : (
 								<span class="no-image">Sin imagen</span>
@@ -104,110 +105,110 @@ const marcas = [...new Set(data.map((item: Indicio) => item.MARCA))].sort();
 					</article>
 				))
 			}
-		</section>
 
-		<!-- Modal para ver la imagen en grande -->
-		<div id="image-modal" class="modal">
-			<span class="close">&times;</span>
-			<img class="modal-content" id="modal-image" />
-		</div>
+			<!-- Modal para ver la imagen en grande -->
+			<div id="image-modal" class="modal">
+				<span class="close">&times;</span>
+				<img class="modal-content" id="modal-image" />
+			</div>
 
-		<!-- JavaScript para los filtros y el modal -->
-		<script>
-			// Filtros
-			const table = document.getElementById("indicios-table");
-			const tipoFilter = document.getElementById("tipo");
-			const colorFilter = document.getElementById("color");
-			const marcaFilter = document.getElementById("marca");
-			function applyFilters() {
-				const tipoValue = (tipoFilter as HTMLSelectElement)?.value || "";
-				const colorValue = (colorFilter as HTMLSelectElement)?.value || "";
-				const marcaValue = (marcaFilter as HTMLSelectElement)?.value || "";
+			<!-- JavaScript para los filtros y el modal -->
+			<script>
+				// Filtros
+				const table = document.getElementById("indicios-table");
+				const tipoFilter = document.getElementById("tipo");
+				const colorFilter = document.getElementById("color");
+				const marcaFilter = document.getElementById("marca");
+				function applyFilters() {
+					const tipoValue = (tipoFilter as HTMLSelectElement)?.value || "";
+					const colorValue = (colorFilter as HTMLSelectElement)?.value || "";
+					const marcaValue = (marcaFilter as HTMLSelectElement)?.value || "";
 
-				const rows = table?.querySelectorAll("tbody tr") || [];
-				rows.forEach((row) => {
-					const tipo = row.getAttribute("data-tipo");
-					const color = row.getAttribute("data-color");
-					const marca = row.getAttribute("data-marca");
+					const rows = table?.querySelectorAll("tbody tr") || [];
+					rows.forEach((row) => {
+						const tipo = row.getAttribute("data-tipo");
+						const color = row.getAttribute("data-color");
+						const marca = row.getAttribute("data-marca");
 
-					const matchesTipo = !tipoValue || tipo === tipoValue;
-					const matchesColor = !colorValue || color === colorValue;
-					const matchesMarca = !marcaValue || marca === marcaValue;
+						const matchesTipo = !tipoValue || tipo === tipoValue;
+						const matchesColor = !colorValue || color === colorValue;
+						const matchesMarca = !marcaValue || marca === marcaValue;
 
-					(row as HTMLElement).style.display =
-						matchesTipo && matchesColor && matchesMarca ? "" : "none";
-				});
-			}
-
-			if (tipoFilter && colorFilter && marcaFilter) {
-				tipoFilter.addEventListener("change", applyFilters);
-				colorFilter.addEventListener("change", applyFilters);
-				marcaFilter.addEventListener("change", applyFilters);
-			}
-
-			// Modal y zoom
-			const modal = document.getElementById("image-modal");
-			const modalImg = document.getElementById("modal-image");
-			const closeBtn = document.querySelector(".close");
-
-			let scale = 1; // Nivel de zoom inicial
-
-			function openModal(imgSrc: string) {
-				if (modal && modalImg) {
-					modal.style.display = "block";
-					(modalImg as HTMLImageElement).src = imgSrc;
-					scale = 1; // Reiniciar el zoom al abrir el modal
-					modalImg.style.transform = `scale(${scale})`;
+						(row as HTMLElement).style.display =
+							matchesTipo && matchesColor && matchesMarca ? "" : "none";
+					});
 				}
-			}
-			function closeModal() {
-				if (modal) {
-					modal.style.display = "none";
-				}
-			}
 
-			// Zoom al hacer clic en la imagen
-			if (modalImg) {
-				modalImg.addEventListener("click", (event) => {
-					event.stopPropagation(); // Evitar que el modal se cierre
-					scale += 0.5; // Aumentar el zoom en 0.5x
-					if (scale > 3) scale = 1; // Reiniciar el zoom si supera 3x
-					modalImg.style.transform = `scale(${scale})`;
-				});
-			}
-			// Zoom con la rueda del mouse
-			if (modalImg) {
-				modalImg.addEventListener("wheel", (event) => {
-					event.preventDefault(); // Evitar el scroll de la página
-					if (event.deltaY < 0) {
-						scale += 0.1; // Aumentar el zoom
-					} else {
-						scale -= 0.1; // Reducir el zoom
+				if (tipoFilter && colorFilter && marcaFilter) {
+					tipoFilter.addEventListener("change", applyFilters);
+					colorFilter.addEventListener("change", applyFilters);
+					marcaFilter.addEventListener("change", applyFilters);
+				}
+
+				// Modal y zoom
+				const modal = document.getElementById("image-modal");
+				const modalImg = document.getElementById("modal-image");
+				const closeBtn = document.querySelector(".close");
+
+				let scale = 1; // Nivel de zoom inicial
+
+				function openModal(imgSrc: string) {
+					if (modal && modalImg) {
+						modal.style.display = "block";
+						(modalImg as HTMLImageElement).src = imgSrc;
+						scale = 1; // Reiniciar el zoom al abrir el modal
+						modalImg.style.transform = `scale(${scale})`;
 					}
-					// Limitar el zoom entre 0.5x y 3x
-					scale = Math.min(Math.max(scale, 0.5), 3);
-					modalImg.style.transform = `scale(${scale})`;
-				});
-			}
-			// Cerrar el modal al hacer clic en la "X" o fuera de la imagen
-			if (closeBtn) {
-				closeBtn.addEventListener("click", closeModal);
-			}
-			window.addEventListener("click", (event) => {
-				if (event.target === modal) {
-					closeModal();
 				}
-			});
+				function closeModal() {
+					if (modal) {
+						modal.style.display = "none";
+					}
+				}
 
-			// Asignar evento de clic a todas las imágenes de la tabla
-			const images =
-				document.querySelectorAll<HTMLImageElement>(".highlighted-image");
-			images.forEach((img) => {
-				img.addEventListener("click", () => openModal(img.src));
-			});
+				// Zoom al hacer clic en la imagen
+				if (modalImg) {
+					modalImg.addEventListener("click", (event) => {
+						event.stopPropagation(); // Evitar que el modal se cierre
+						scale += 0.5; // Aumentar el zoom en 0.5x
+						if (scale > 3) scale = 1; // Reiniciar el zoom si supera 3x
+						modalImg.style.transform = `scale(${scale})`;
+					});
+				}
+				// Zoom con la rueda del mouse
+				if (modalImg) {
+					modalImg.addEventListener("wheel", (event) => {
+						event.preventDefault(); // Evitar el scroll de la página
+						if (event.deltaY < 0) {
+							scale += 0.1; // Aumentar el zoom
+						} else {
+							scale -= 0.1; // Reducir el zoom
+						}
+						// Limitar el zoom entre 0.5x y 3x
+						scale = Math.min(Math.max(scale, 0.5), 3);
+						modalImg.style.transform = `scale(${scale})`;
+					});
+				}
+				// Cerrar el modal al hacer clic en la "X" o fuera de la imagen
+				if (closeBtn) {
+					closeBtn.addEventListener("click", closeModal);
+				}
+				window.addEventListener("click", (event) => {
+					if (event.target === modal) {
+						closeModal();
+					}
+				});
 
-			// Aplicar filtros al cargar la página
-			applyFilters();
-		</script>
+				// Asignar evento de clic a todas las imágenes de la tabla
+				const images =
+					document.querySelectorAll<HTMLImageElement>(".highlighted-image");
+				images.forEach((img) => {
+					img.addEventListener("click", () => openModal(img.src));
+				});
+
+				// Aplicar filtros al cargar la página
+				applyFilters();
+			</script>
+		</section>
 	</body>
 </html>
