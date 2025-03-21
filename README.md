@@ -9,12 +9,7 @@ Este proyecto presenta una galería interactiva de indicios descubiertos en el R
 Visita el catálogo desplegado en: [https://juanpablosolana.github.io/catalogoIndiciosTeuchitlan/](https://juanpablosolana.github.io/catalogoIndiciosTeuchitlan/)
 
 ## Inspiración
-Este proyecto está inspirado en [abundis-rmn2/catalogoIndiciosTeuchitlan](https://github.com/abundis-rmn2/catalogoIndiciosTeuchitlan), un catálogo estático en HTML. Lo hemos ampliado con:
-- Una interfaz dinámica en Astro con filtros para "Tipo de Indicio", "Color" y "Marca".
-- Tipado seguro mediante TypeScript.
-- Un diseño moderno y responsivo con CSS personalizado.
-- Scripts en Python para procesar datos e imágenes.
-- Despliegue automatizado en GitHub Pages.
+Este proyecto está inspirado en [abundis-rmn2/catalogoIndiciosTeuchitlan](https://github.com/abundis-rmn2/catalogoIndiciosTeuchitlan), 
 
 ## Fuente de Información
 La información utilizada proviene de una fuente oficial de la Fiscalía de Jalisco:
