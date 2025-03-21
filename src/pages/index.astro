@@ -58,20 +58,50 @@ const marcas = [...new Set(data.map((item: Indicio) => item.MARCA))].sort();
 		<section class="cards-container">
 			{
 				data.map((item: Indicio) => (
-					<div class="card">
+					<article
+						class="card"
+						data-tipo={item["TIPO DE INDICIO"]}
+						data-color={item.COLOR}
+						data-marca={item.MARCA}
+					>
 						<div class="card-image">
-							<img
-								src={`/catalogoIndiciosTeuchitlan/${item["RUTA IMAGEN"]}`}
-								alt={item.INDICIO}
-							/>
+							{item["RUTA IMAGEN"] ? (
+								<img
+									src={`/catalogoIndiciosTeuchitlan/${item["RUTA IMAGEN"]}`}
+									alt={item.INDICIO}
+								/>
+							) : (
+								<span class="no-image">Sin imagen</span>
+							)}
 						</div>
 						<div class="card-content">
-							<p>{item.INDICIO}</p>
-							<p>{item["TIPO DE INDICIO"]}</p>
-							<p>{item.COLOR}</p>
-							<p>{item.MARCA}</p>
+							<h2 class="card-title">{item.INDICIO}</h2>
+							<p>
+								<strong>ID:</strong> {item.id}
+							</p>
+							<p>
+								<strong>Tipo:</strong> {item["TIPO DE INDICIO"]}
+							</p>
+							<p>
+								<strong>Color:</strong> {item.COLOR}
+							</p>
+							<p>
+								<strong>Marca:</strong> {item.MARCA}
+							</p>
+							<p>
+								<strong>Talla:</strong> {item.TALLA}
+							</p>
+							<p>
+								<strong>Observaciones:</strong> {item.OBSERVACIONES}
+							</p>
+							<p>
+								<strong>Descargar :</strong>
+								<a href={item["LINK FOTO"]} target="_blank">
+									foto
+								</a>
+							</p>
 						</div>
-					</div>
+					</article>
 				))
 			}
 		</section>
